@@ -47,10 +47,9 @@ def main():
 
     flib_instance.print_jfilelist(video_jfilelist)
 
+
     url_list = conflib_instance.get('URL_LIST', [])
-    print("URL_LIST: ", url_list)
     weblib_instance = WebLib(url_list)
-    print(weblib_instance.get_title())
 
     return (1)
 

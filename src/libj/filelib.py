@@ -1,5 +1,6 @@
 import os
 import math
+import shutil
 
 from pathlib import Path
 from dataclasses import dataclass, field
@@ -27,11 +28,11 @@ class FileLib:
                 src_ext = Path(src_file).suffix.lower()
                 src_size = os.path.getsize(src_file)
                 #src_relpath = os.path.relpath(src_file, src_dir_path)
-                src_relpath = src_dirpath.replace(src_dir_path, "")
-                dst_path = os.path.join(dst_dir_path, src_relpath[1:])
+                #src_relpath = src_dirpath.replace(src_dir_path, "")
+                #dst_path = os.path.join(dst_dir_path, src_relpath[1:])
                 
                 self.jfilelist.append(JFile(src_file,
-                                                dst_path, src_filename, src_ext, FStatus.INCOMING, FExt.NOT_FILTERED,
+                                                dst_dir_path, src_filename, src_ext, FStatus.INCOMING, FExt.NOT_FILTERED,
                                                 src_size))
                 
     def set_jfile_filename(self, jfile, filename):
@@ -53,6 +54,22 @@ class FileLib:
             else:
                 jfile.fext = FExt.NOT_FILTERED
 
+    def jcopy(self,
+                jfile,
+                option=0):
+        src_file_path = jfile.src_path
+        dst_file_path = os.path.join(jfile.dst_path, jfile.filename)
+        dst_file_dir = jfile.dst_path
+
+        if (jfile.fstatus == FStatus.INCOMING):
+            if not os.path.exists(dst_file_dir):
+                os.makedirs(dst_file_dir)
+
+            shutil.copy(src_file_path, dst_file_path)
+
+            jfile.fstatus = FStatus.OUTGOING
+
+            return jfile
 
     def print_jfilelist(self,
                         in_jfilelist=jfilelist):
@@ -62,7 +79,7 @@ class FileLib:
             print("DST_PATH: ", jfile.dst_path)
             print("FILENAME: ", jfile.filename)
             print("EXTENSION: ", jfile.extension)
-            print("FSTATUS: ", jfile.fstatux)
+            print("FSTATUS: ", jfile.fstatus)
             print("FEXT: ", jfile.fext)
             print("SRC_SIZE: ", self.convert_size(jfile.src_size))
 
@@ -126,6 +143,6 @@ class JFile:
     dst_path: str
     filename: str
     extension: str
-    fstatux: FStatus
+    fstatus: FStatus
     fext: FExt
     src_size: int
