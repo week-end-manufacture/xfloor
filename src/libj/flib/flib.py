@@ -29,7 +29,16 @@ class Flib:
                 self.jfilelist.append(JFile(src_file,
                                                 dst_path, src_filename, src_ext, FStatus.INCOMING, FExt.NOT_FILTERED,
                                                 src_size))
-                
+
+    def classify_jfilelist_extension(self):
+        for jfile in self.jfilelist:
+            if jfile.extension in self.video_exts:
+                jfile.fext = FExt.VIDEO
+            elif jfile.extension in self.image_exts:
+                jfile.fext = FExt.IMAGE
+            else:
+                jfile.fext = FExt.NOT_FILTERED
+
     def print_jfilelist(self):
         for jfile in self.jfilelist:
             print("################JFILE################")
