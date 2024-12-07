@@ -14,7 +14,10 @@ class Flib:
     def __init__(self):
         self.src_filelist = []
 
-    def fget_filelist(self,
+    def get_jfilelist(self):
+        return self.jfilelist
+
+    def set_jfilelist(self,
                      src_dir_path,
                      dst_dir_path):
         
@@ -23,12 +26,18 @@ class Flib:
                 src_file = os.path.join(src_dirpath, src_filename)
                 src_ext = Path(src_file).suffix.lower()
                 src_size = os.path.getsize(src_file)
-                src_relpath = os.path.relpath(src_file, src_dir_path)
-                dst_path = os.path.join(dst_dir_path, src_relpath)
+                #src_relpath = os.path.relpath(src_file, src_dir_path)
+                src_relpath = src_dirpath.replace(src_dir_path, "")
+                dst_path = os.path.join(dst_dir_path, src_relpath[1:])
                 
                 self.jfilelist.append(JFile(src_file,
                                                 dst_path, src_filename, src_ext, FStatus.INCOMING, FExt.NOT_FILTERED,
                                                 src_size))
+                
+    def set_jfile_filename(self, jfile, filename):
+        jfile.filename = filename
+
+        return jfile
 
     def classify_jfilelist_extension(self):
         for jfile in self.jfilelist:
@@ -49,6 +58,24 @@ class Flib:
             print("FSTATUS: ", jfile.fstatux)
             print("FEXT: ", jfile.fext)
             print("SRC_SIZE: ", self.convert_size(jfile.src_size))
+
+    def is_video_jfile(self, jfile):
+        if (jfile.fext == FExt.VIDEO):
+            return True
+        else:
+            return False
+        
+    def is_image_jfile(self, jfile):
+        if (jfile.fext == FExt.IMAGE):
+            return True
+        else:
+            return False
+        
+    def is_not_filtered_jfile(self, jfile):
+        if (jfile.fext == FExt.NOT_FILTERED):
+            return True
+        else:
+            return False
     
     def convert_size(self, size_bytes):
         if size_bytes == 0:
@@ -60,6 +87,10 @@ class Flib:
         s = round(size_bytes / p, 2)
 
         return "%s %s" % (s, size_name[i])
+    
+    def get_product_name(self, filename):
+
+        print(filename.split("@")[0])
 
 
 @unique

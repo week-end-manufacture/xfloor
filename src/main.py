@@ -21,17 +21,18 @@ def main():
         src_dir_path = args.src_dir_path
         dst_dir_path = args.dst_dir_path
     else:
-        src_dir_path = "./"
-        dst_dir_path = "./"
+        return (-1)
 
-    print("TEST")
     flib_instance = Flib()
 
-    flib_instance.fget_filelist(src_dir_path, dst_dir_path)
-
+    flib_instance.set_jfilelist(src_dir_path, dst_dir_path)
     flib_instance.classify_jfilelist_extension()
-
     flib_instance.print_jfilelist()
+
+    jfilelist = flib_instance.get_jfilelist()
+
+    for jfile in jfilelist:
+        flib_instance.get_product_name(jfile.filename)
 
 if __name__ == "__main__":
     main()
