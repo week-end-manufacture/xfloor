@@ -41,6 +41,11 @@ class Flib:
 
     def classify_jfilelist_extension(self):
         for jfile in self.jfilelist:
+            if jfile.filename[0] == ".":
+                jfile.fext = FExt.NOT_FILTERED
+
+                continue
+
             if jfile.extension in self.video_exts:
                 jfile.fext = FExt.VIDEO
             elif jfile.extension in self.image_exts:
@@ -48,8 +53,10 @@ class Flib:
             else:
                 jfile.fext = FExt.NOT_FILTERED
 
-    def print_jfilelist(self):
-        for jfile in self.jfilelist:
+
+    def print_jfilelist(self,
+                        in_jfilelist=jfilelist):
+        for jfile in in_jfilelist:
             print("################JFILE################")
             print("SRC_PATH: ", jfile.src_path)
             print("DST_PATH: ", jfile.dst_path)
@@ -89,8 +96,13 @@ class Flib:
         return "%s %s" % (s, size_name[i])
     
     def get_product_name(self, filename):
+        product_name = None
+        filesplitlist = filename.split("@")
 
-        print(filename.split("@")[0])
+        if len(filesplitlist) > 1:
+            product_name = filesplitlist[1]
+
+        return product_name
 
 
 @unique

@@ -30,9 +30,19 @@ def main():
     flib_instance.print_jfilelist()
 
     jfilelist = flib_instance.get_jfilelist()
+    video_jfilelist = []
 
     for jfile in jfilelist:
-        flib_instance.get_product_name(jfile.filename)
+        if flib_instance.is_video_jfile(jfile):
+            video_jfilelist.append(jfile)
+
+    for jfile in video_jfilelist:
+        product_name = flib_instance.get_product_name(jfile.filename)
+
+        if product_name != None:
+            jfile.filename = product_name
+
+    flib_instance.print_jfilelist(video_jfilelist)
 
 if __name__ == "__main__":
     main()
