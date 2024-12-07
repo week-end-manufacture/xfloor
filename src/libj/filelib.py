@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from enum import Enum, unique, auto
 
 
-class Flib:
+class FileLib:
     video_exts = [".mp4", ".mkv", ".avi", ".flv", ".wmv", ".mov", ".webm", ".vob", ".3gp", ".3g2", ".m4v", ".mpg", ".mpeg", ".m2v", ".m4v", ".f4v", ".f4p", ".f4a", ".f4b"]
     image_exts = ["jpg", "jpeg", "png", "gif", "bmp", "tiff", "tif", "webp", "svg", "svgz", "ico", "jng", "wbmp", "cur", "heif", "heic", "avif", "apng"]
     jfilelist = []

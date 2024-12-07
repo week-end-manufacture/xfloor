@@ -2,12 +2,15 @@ import os
 import argparse
 
 from dotenv import load_dotenv
-from libj.flib.flib import Flib
+from libj.filelib import FileLib
+from libj.weblib import WebLib
+from libj.conflib import ConfLib
 
 
 def main():
-    # Load environment variables from .env file
-    load_dotenv()
+    # Load environment variables from JSON file
+    conflib_instance = ConfLib('../config/config.json')
+    conflib_instance.set_env_variables()
 
     xfloor_version = os.getenv('XFLOOR_VERSION')
 
@@ -23,7 +26,7 @@ def main():
     else:
         return (-1)
 
-    flib_instance = Flib()
+    flib_instance = FileLib()
 
     flib_instance.set_jfilelist(src_dir_path, dst_dir_path)
     flib_instance.classify_jfilelist_extension()
@@ -43,6 +46,13 @@ def main():
             jfile.filename = product_name
 
     flib_instance.print_jfilelist(video_jfilelist)
+
+    url_list = conflib_instance.get('URL_LIST', [])
+    print("URL_LIST: ", url_list)
+    weblib_instance = WebLib(url_list)
+    print(weblib_instance.get_title())
+
+    return (1)
 
 if __name__ == "__main__":
     main()
