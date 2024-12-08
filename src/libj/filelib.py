@@ -34,7 +34,12 @@ class FileLib:
                 self.jfilelist.append(JFile(src_file,
                                                 dst_dir_path, src_filename, src_ext, FStatus.INCOMING, FExt.NOT_FILTERED,
                                                 src_size))
-                
+
+    def set_jfile_dst_path(self, jfile, dst_path):
+        jfile.dst_path = dst_path
+
+        return jfile
+
     def set_jfile_filename(self, jfile, filename):
         jfile.filename = filename
 

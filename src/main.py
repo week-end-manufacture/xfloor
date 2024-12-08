@@ -2,6 +2,7 @@ import os
 import argparse
 
 from libj.filelib import FileLib
+from libj.jsonlib import JsonLib
 from libj.weblib import *
 from libj.conflib import ConfLib
 
@@ -43,9 +44,27 @@ def main():
     if len(url_list) > 0:
         if ("R18" in url_list):
             r18_instance = R18(url_list["R18"])
-            product_name = r18_instance.get_product_name("hhd@MMPB-062")
-            json_page = r18_instance.get_json_page(product_name)
-            print(json_page)
+
+            for jfile in video_jfilelist:
+                filename = jfile.filename
+                product_name = r18_instance.get_product_name(filename)
+
+                print(product_name)
+                
+                json_page = r18_instance.get_json_page(product_name)
+
+                if json_page == None:
+                    continue
+
+                jsonlib_instance = JsonLib(json_page)
+                actress_name = jsonlib_instance.get("actresses")[0].get("name_romaji")
+
+                if actress_name == None:
+                    continue
+
+                jacket_image_url = jsonlib_instance.get("jacket_full_url")
+
+                r18_instance.get_fanart(jacket_image_url, jfile.dst_path)
         else:
             print("Supported url is not in URL_LIST")
 
@@ -54,14 +73,6 @@ def main():
         print("URL_LIST is empty")
 
         return (-1)
-
-    # for jfile in video_jfilelist:
-    #     product_name = flib_instance.get_product_name(jfile.filename)
-
-    #     if product_name != None:
-    #         jfile.filename = product_name
-
-
 
     return (1)
 
