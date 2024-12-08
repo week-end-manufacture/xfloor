@@ -34,7 +34,12 @@ class FileLib:
                 self.jfilelist.append(JFile(src_file,
                                                 dst_dir_path, src_filename, src_ext, FStatus.INCOMING, FExt.NOT_FILTERED,
                                                 src_size))
-                
+
+    def set_jfile_dst_path(self, jfile, dst_path):
+        jfile.dst_path = dst_path
+
+        return jfile
+
     def set_jfile_filename(self, jfile, filename):
         jfile.filename = filename
 
@@ -65,11 +70,44 @@ class FileLib:
             if not os.path.exists(dst_file_dir):
                 os.makedirs(dst_file_dir)
 
-            shutil.copy(src_file_path, dst_file_path)
+            total_size = os.path.getsize(src_file_path)
+            copied_size = 0
+            buffer_size = 1024 * 1024  # 1MB
+
+            with open(src_file_path, 'rb') as src_file, open(dst_file_path, 'wb') as dst_file:
+                while True:
+                    buffer = src_file.read(buffer_size)
+                    if not buffer:
+                        break
+                    dst_file.write(buffer)
+                    copied_size += len(buffer)
+                    progress = (copied_size / total_size) * 100
+                    print(f"\rjCopying {jfile.filename}: {progress:.2f}%", end='')
+
+            print()  # New line after progress bar completion
 
             jfile.fstatus = FStatus.OUTGOING
 
             return jfile
+        
+    def junlink(self,
+                jfile,
+                option=1):
+        src_path = jfile.src_path
+        src_dir = os.path.dirname(src_path)
+
+        if (option == 1):
+            if (jfile.fstatus == FStatus.OUTGOING):
+                if (os.path.isfile(src_path)):
+                    os.unlink(src_path)
+                
+                if (os.path.isdir(src_dir)):
+                    if (len(os.listdir(src_dir)) == 0):
+                        os.rmdir(src_dir)
+
+                jfile.fstatus = FStatus.DELETED
+
+        return jfile
 
     def print_jfilelist(self,
                         in_jfilelist=jfilelist):
@@ -111,15 +149,6 @@ class FileLib:
         s = round(size_bytes / p, 2)
 
         return "%s %s" % (s, size_name[i])
-    
-    def get_product_name(self, filename):
-        product_name = None
-        filesplitlist = filename.split("@")
-
-        if len(filesplitlist) > 1:
-            product_name = filesplitlist[1]
-
-        return product_name
 
 
 @unique

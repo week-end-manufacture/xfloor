@@ -1,15 +1,19 @@
 import os
 import argparse
 
-from dotenv import load_dotenv
 from libj.filelib import FileLib
-from libj.weblib import WebLib
+from libj.jsonlib import JsonLib
+from libj.weblib import *
+from libj.loglib import LogLib
 from libj.conflib import ConfLib
 
 
 def main():
+    # Initialize logger
+    log = LogLib(name='xfloor').get_logger()
+
     # Load environment variables from JSON file
-    conflib_instance = ConfLib('../config/config.json')
+    conflib_instance = ConfLib('xfloor')
     conflib_instance.set_env_variables()
 
     xfloor_version = os.getenv('XFLOOR_VERSION')
@@ -18,7 +22,13 @@ def main():
     parser.add_argument("-i", "--src_dir_path", help="Source directory path", action="store")
     parser.add_argument("-o", "--dst_dir_path", help="Destination directory path", action="store")
     parser.add_argument("-v", "--version", help="Version", action="version", version='%(prog)s version ' + xfloor_version + ', built with Homebrew')
+    parser.add_argument("-s", "--settings", help="Open setting directory", action="store_true")
     args = parser.parse_args()
+
+    if (args.settings):
+        conflib_instance.open_config()
+
+        return (1)
     
     if (args.src_dir_path != None and args.dst_dir_path != None):
         src_dir_path = args.src_dir_path
@@ -39,17 +49,55 @@ def main():
         if flib_instance.is_video_jfile(jfile):
             video_jfilelist.append(jfile)
 
-    for jfile in video_jfilelist:
-        product_name = flib_instance.get_product_name(jfile.filename)
-
-        if product_name != None:
-            jfile.filename = product_name
-
-    flib_instance.print_jfilelist(video_jfilelist)
-
-
     url_list = conflib_instance.get('URL_LIST', [])
-    weblib_instance = WebLib(url_list)
+
+    if len(url_list) > 0:
+        if ("R18" in url_list):
+            r18_instance = R18(url_list["R18"])
+
+            for jfile in video_jfilelist:
+                filename = jfile.filename
+                product_name = r18_instance.get_product_name(filename)
+
+                print(product_name)
+                
+                json_page = r18_instance.get_json_page(product_name)
+
+                if json_page == None:
+                    continue
+
+                jsonlib_instance = JsonLib(json_page)
+
+                actress_name = jsonlib_instance.get("actresses")[0].get("name_romaji")
+                dvd_id = jsonlib_instance.get("dvd_id")
+                release_date = jsonlib_instance.get("release_date")
+                release_date = release_date.split("-")[0]
+
+                edge_dirname = f"{dvd_id}({release_date})"
+
+                if actress_name == None or dvd_id == None:
+                    continue
+
+                tmp_dst = os.path.join(dst_dir_path, actress_name, edge_dirname)
+                jfile = flib_instance.set_jfile_dst_path(jfile, tmp_dst)
+
+                jacket_image_url = jsonlib_instance.get("jacket_full_url")
+
+                if (r18_instance.get_fanart(jacket_image_url, jfile.dst_path) == None):
+                    print("Failed to download fanart")
+
+                tmp_filename = f"{dvd_id}{jfile.extension}"
+                jfile = flib_instance.set_jfile_filename(jfile, tmp_filename)
+
+                flib_instance.jcopy(jfile)
+        else:
+            print("Supported url is not in URL_LIST")
+
+            return (-1)
+    else:
+        print("URL_LIST is empty")
+
+        return (-1)
 
     return (1)
 
