@@ -3,7 +3,7 @@ import argparse
 
 from dotenv import load_dotenv
 from libj.filelib import FileLib
-from libj.weblib import WebLib
+from libj.weblib import *
 from libj.conflib import ConfLib
 
 
@@ -44,10 +44,17 @@ def main():
     if len(url_list) > 0:
         if ("R18" in url_list):
             print(url_list["R18"])
-            # r18_instance = WebLib(url_list["R18"])
-            # r18_instance.get_title()
+            r18_instance = R18(url_list["R18"])
+            title = r18_instance.get_title()
+            print(title)
+        else:
+            print("Supported url is not in URL_LIST")
+
+            return (-1)
     else:
         print("URL_LIST is empty")
+
+        return (-1)
 
     # for jfile in video_jfilelist:
     #     product_name = flib_instance.get_product_name(jfile.filename)
