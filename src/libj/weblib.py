@@ -20,16 +20,20 @@ class R18(WebLib):
         soup = BeautifulSoup(html, 'html.parser')
         return soup.title
     
-    def get_page(self):
-        html = urllib.request.urlopen(self.url)
+    def get_json_page(self,
+                 product_name):
+        json_page_url = "https://r18.dev/videos/vod/movies/detail/-/combined=%s/json" % product_name
+        html = urllib.request.urlopen(json_page_url)
         soup = BeautifulSoup(html, 'html.parser')
         return soup
     
-    def get_product_name(self, filename):
+    def get_product_name(self, input_str):
         product_name = None
-        filesplitlist = filename.split("@")
+        filesplitlist = input_str.split("@")
 
         if len(filesplitlist) > 1:
             product_name = filesplitlist[1]
+            product_name = product_name.replace("-", "")
+            product_name = product_name.lower()
 
         return product_name

@@ -1,7 +1,6 @@
 import os
 import argparse
 
-from dotenv import load_dotenv
 from libj.filelib import FileLib
 from libj.weblib import *
 from libj.conflib import ConfLib
@@ -43,10 +42,10 @@ def main():
 
     if len(url_list) > 0:
         if ("R18" in url_list):
-            print(url_list["R18"])
             r18_instance = R18(url_list["R18"])
-            title = r18_instance.get_title()
-            print(title)
+            product_name = r18_instance.get_product_name("hhd@MMPB-062")
+            json_page = r18_instance.get_json_page(product_name)
+            print(json_page)
         else:
             print("Supported url is not in URL_LIST")
 
