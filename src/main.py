@@ -4,12 +4,16 @@ import argparse
 from libj.filelib import FileLib
 from libj.jsonlib import JsonLib
 from libj.weblib import *
+from libj.loglib import LogLib
 from libj.conflib import ConfLib
 
 
 def main():
+    # Initialize logger
+    log = LogLib(name='xfloor').get_logger()
+
     # Load environment variables from JSON file
-    conflib_instance = ConfLib('../config/config.json')
+    conflib_instance = ConfLib('xfloor')
     conflib_instance.set_env_variables()
 
     xfloor_version = os.getenv('XFLOOR_VERSION')
@@ -18,7 +22,13 @@ def main():
     parser.add_argument("-i", "--src_dir_path", help="Source directory path", action="store")
     parser.add_argument("-o", "--dst_dir_path", help="Destination directory path", action="store")
     parser.add_argument("-v", "--version", help="Version", action="version", version='%(prog)s version ' + xfloor_version + ', built with Homebrew')
+    parser.add_argument("-s", "--settings", help="Open setting directory", action="store_true")
     args = parser.parse_args()
+
+    if (args.settings):
+        conflib_instance.open_config()
+
+        return (1)
     
     if (args.src_dir_path != None and args.dst_dir_path != None):
         src_dir_path = args.src_dir_path
@@ -69,7 +79,6 @@ def main():
                     continue
 
                 tmp_dst = os.path.join(dst_dir_path, actress_name, edge_dirname)
-
                 jfile = flib_instance.set_jfile_dst_path(jfile, tmp_dst)
 
                 jacket_image_url = jsonlib_instance.get("jacket_full_url")
@@ -77,7 +86,10 @@ def main():
                 if (r18_instance.get_fanart(jacket_image_url, jfile.dst_path) == None):
                     print("Failed to download fanart")
 
+                tmp_filename = f"{dvd_id}{jfile.extension}"
+                jfile = flib_instance.set_jfile_filename(jfile, tmp_filename)
 
+                flib_instance.jcopy(jfile)
         else:
             print("Supported url is not in URL_LIST")
 

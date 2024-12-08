@@ -2,9 +2,15 @@ import os
 import json
 
 class ConfLib:
-    def __init__(self, json_file_path):
-        self.json_file_path = json_file_path
+    def __init__(self, prog_name):
+        self.prog_name = prog_name
+        self.json_file_path = self.set_json_file_path()
         self.config = self.load_json()
+
+    def set_json_file_path(self):
+        home_dir = os.path.expanduser("~")
+
+        return os.path.join(home_dir, '.config', self.prog_name, 'config.json')
 
     def load_json(self):
         if not os.path.exists(self.json_file_path):
@@ -19,3 +25,6 @@ class ConfLib:
     def set_env_variables(self):
         for key, value in self.config.items():
             os.environ[key] = str(value)
+
+    def open_config(self):
+        os.system(f"open {self.json_file_path}")
