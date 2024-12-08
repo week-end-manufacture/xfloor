@@ -52,13 +52,21 @@ class R18(WebLib):
             os.makedirs(dst_dir_path)
 
         try:
-            urllib.request.urlretrieve(image_url, dst_file_path)
+            retval = urllib.request.urlretrieve(image_url, dst_file_path)
+
+            return retval
         except HTTPError as e:
             print(f"HTTP error occurred: {e.code} - {e.reason}")
+
+            return None
         except URLError as e:
             print(f"URL error occurred: {e.reason}")
+
+            return None
         except Exception as e:
             print(f"An unexpected error occurred: {str(e)}")
+
+            return None
     
     def get_product_name(self, input_str):
         product_name = None

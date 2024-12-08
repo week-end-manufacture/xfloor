@@ -57,14 +57,27 @@ def main():
                     continue
 
                 jsonlib_instance = JsonLib(json_page)
-                actress_name = jsonlib_instance.get("actresses")[0].get("name_romaji")
 
-                if actress_name == None:
+                actress_name = jsonlib_instance.get("actresses")[0].get("name_romaji")
+                dvd_id = jsonlib_instance.get("dvd_id")
+                release_date = jsonlib_instance.get("release_date")
+                release_date = release_date.split("-")[0]
+
+                edge_dirname = f"{dvd_id}({release_date})"
+
+                if actress_name == None or dvd_id == None:
                     continue
+
+                tmp_dst = os.path.join(dst_dir_path, actress_name, edge_dirname)
+
+                jfile = flib_instance.set_jfile_dst_path(jfile, tmp_dst)
 
                 jacket_image_url = jsonlib_instance.get("jacket_full_url")
 
-                r18_instance.get_fanart(jacket_image_url, jfile.dst_path)
+                if (r18_instance.get_fanart(jacket_image_url, jfile.dst_path) == None):
+                    print("Failed to download fanart")
+
+
         else:
             print("Supported url is not in URL_LIST")
 
