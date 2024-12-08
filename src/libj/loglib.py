@@ -1,3 +1,4 @@
+import os
 import logging
 
 class LogLib:
@@ -6,7 +7,9 @@ class LogLib:
         self.logger.setLevel(level)
 
         # Create file handler which logs even debug messages
-        fh = logging.FileHandler(log_file)
+        home_dir = os.path.expanduser("~")
+        log_path = os.path.join(home_dir, '.config', name, log_file)
+        fh = logging.FileHandler(log_path)
         fh.setLevel(level)
 
         # Create console handler with a higher log level

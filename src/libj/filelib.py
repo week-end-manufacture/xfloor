@@ -106,6 +106,16 @@ class FileLib:
                         os.rmdir(src_dir)
 
                 jfile.fstatus = FStatus.DELETED
+        elif (option == 2):
+            if (jfile.fstatus == FStatus.OUTGOING or self.is_video_jfile(jfile) == False):
+                if (os.path.isfile(src_path)):
+                    os.unlink(src_path)
+
+                if (os.path.isdir(src_dir)):
+                    if (len(os.listdir(src_dir)) == 0):
+                        os.rmdir(src_dir)
+
+                jfile.fstatus = FStatus.DELETED
 
         return jfile
 
