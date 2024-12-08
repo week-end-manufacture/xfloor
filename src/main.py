@@ -43,11 +43,6 @@ def main():
     flib_instance.print_jfilelist()
 
     jfilelist = flib_instance.get_jfilelist()
-    video_jfilelist = []
-
-    for jfile in jfilelist:
-        if flib_instance.is_video_jfile(jfile):
-            video_jfilelist.append(jfile)
 
     url_list = conflib_instance.get('URL_LIST', [])
 
@@ -55,7 +50,11 @@ def main():
         if ("R18" in url_list):
             r18_instance = R18(url_list["R18"])
 
-            for jfile in video_jfilelist:
+            for jfile in jfilelist:
+
+                if (flib_instance.is_video_jfile(jfile) == False):
+                    continue
+
                 filename = jfile.filename
                 product_name = r18_instance.get_product_name(filename)
 
@@ -90,6 +89,10 @@ def main():
                 jfile = flib_instance.set_jfile_filename(jfile, tmp_filename)
 
                 flib_instance.jcopy(jfile)
+
+            for jfile in jfilelist:    
+                flib_instance.junlink(jfile)
+            
         else:
             print("Supported url is not in URL_LIST")
 

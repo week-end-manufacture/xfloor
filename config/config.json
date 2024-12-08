@@ -1,6 +1,6 @@
 {
-    "XFLOOR_VERSION": "1.0.0",
+    "XFLOOR_VERSION": "0.0.1",
     "URL_LIST": {
-        "R18": "https://www.r18.dev/"
+        "EX": "https://www.example.com/"
     }
 }
