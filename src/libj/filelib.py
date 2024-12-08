@@ -111,15 +111,6 @@ class FileLib:
         s = round(size_bytes / p, 2)
 
         return "%s %s" % (s, size_name[i])
-    
-    def get_product_name(self, filename):
-        product_name = None
-        filesplitlist = filename.split("@")
-
-        if len(filesplitlist) > 1:
-            product_name = filesplitlist[1]
-
-        return product_name
 
 
 @unique

@@ -4,12 +4,27 @@ from bs4 import BeautifulSoup
 
 
 class WebLib:
-    url_list = []
+    url = None
 
-    def __init__(self, url_list):
-        self.url_list = url_list
+    def __init__(self, url):
+        self.url_list = url
 
     def get_title(self):
-        html = urllib.request.urlopen(self.url_list[0])
+        html = urllib.request.urlopen(self.url)
         soup = BeautifulSoup(html, 'html.parser')
         return soup
+    
+class R18(WebLib):
+    def get_title(self):
+        html = urllib.request.urlopen(self.url)
+        soup = BeautifulSoup(html, 'html.parser')
+        return soup.title
+    
+    def get_product_name(self, filename):
+        product_name = None
+        filesplitlist = filename.split("@")
+
+        if len(filesplitlist) > 1:
+            product_name = filesplitlist[1]
+
+        return product_name

@@ -39,17 +39,23 @@ def main():
         if flib_instance.is_video_jfile(jfile):
             video_jfilelist.append(jfile)
 
-    for jfile in video_jfilelist:
-        product_name = flib_instance.get_product_name(jfile.filename)
-
-        if product_name != None:
-            jfile.filename = product_name
-
-    flib_instance.print_jfilelist(video_jfilelist)
-
-
     url_list = conflib_instance.get('URL_LIST', [])
-    weblib_instance = WebLib(url_list)
+
+    if len(url_list) > 0:
+        if ("R18" in url_list):
+            print(url_list["R18"])
+            # r18_instance = WebLib(url_list["R18"])
+            # r18_instance.get_title()
+    else:
+        print("URL_LIST is empty")
+
+    # for jfile in video_jfilelist:
+    #     product_name = flib_instance.get_product_name(jfile.filename)
+
+    #     if product_name != None:
+    #         jfile.filename = product_name
+
+
 
     return (1)
 
