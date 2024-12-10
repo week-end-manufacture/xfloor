@@ -2,11 +2,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='xfloor',
-    version='0.0.1',
-    packages=find_packages(),
+    version='0.0.3',
+    packages=find_packages(include=['libj', 'libj.*']),
+    py_modules=['main'],
     install_requires=[
         'beautifulsoup4',
-        'soupsieve'
+        'soupsieve',
+        'setuptools',
     ],
     entry_points={
         'console_scripts': [
