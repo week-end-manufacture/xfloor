@@ -6,6 +6,7 @@ from libj.jsonlib import JsonLib
 from libj.weblib import *
 from libj.loglib import LogLib
 from libj.conflib import ConfLib
+from libj.verlib import __version__
 
 
 def main():
@@ -16,7 +17,7 @@ def main():
     conflib_instance = ConfLib('xfloor')
     conflib_instance.set_env_variables()
 
-    xfloor_version = os.getenv('XFLOOR_VERSION')
+    xfloor_version = __version__
 
     parser = argparse.ArgumentParser(prog='xfloor', description='Across floor file transfer')
     parser.add_argument("-i", "--src_dir_path", help="Source directory path", action="store")
