@@ -3,18 +3,15 @@ import json
 import shutil
 
 class ConfLib:
-    def __init__(self, prog_name):
-        self.prog_name = prog_name
+    def __init__(self, app_name):
+        self.app_name = app_name
         self.home_dir = os.path.expanduser("~")
-        self.config_dir = os.path.join(self.home_dir, f'.{self.prog_name}')
+        self.config_dir = os.path.join(self.home_dir, '.config', f'{self.app_name}')
         self.config_file = os.path.join(self.config_dir, 'config.json')
-        self.config = self.load_json()
+        self.default_config_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),'config',  'config.json')
 
-    def set_json_file_path(self):
-        home_dir = os.path.expanduser("~")
+        self.ensure_config_file()
 
-        return os.path.join(home_dir, '.config', self.prog_name, 'config.json')
-    
     def ensure_config_file(self):
         if not os.path.exists(self.config_dir):
             os.makedirs(self.config_dir)
@@ -24,18 +21,17 @@ class ConfLib:
             print(f"Copied default config to {self.config_file}")
 
     def load_json(self):
-        if not os.path.exists(self.json_file_path):
-            raise FileNotFoundError(f"JSON file not found: {self.json_file_path}")
-        
-        with open(self.json_file_path, 'r') as file:
+        with open(self.config_file, 'r') as file:
             return json.load(file)
 
     def get(self, key, default=None):
-        return self.config.get(key, default)
+        config = self.load_json()
+        return config.get(key, default)
 
     def set_env_variables(self):
-        for key, value in self.config.items():
+        config = self.load_json()
+        for key, value in config.items():
             os.environ[key] = str(value)
 
     def open_config(self):
-        os.system(f"open {self.json_file_path}")
+        os.system(f'open {self.config_dir}')
