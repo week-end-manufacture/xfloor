@@ -68,10 +68,14 @@ def main():
 
                 jsonlib_instance = JsonLib(json_page)
 
-                actress_name = jsonlib_instance.get("actresses")[0].get("name_romaji")
-                dvd_id = jsonlib_instance.get("dvd_id")
-                release_date = jsonlib_instance.get("release_date")
-                release_date = release_date.split("-")[0]
+                try:
+                    actress_name = jsonlib_instance.get("actresses")[0].get("name_romaji")
+                    dvd_id = jsonlib_instance.get("dvd_id")
+                    release_date = jsonlib_instance.get("release_date")
+                    release_date = release_date.split("-")[0]
+                except IndexError:
+                    print("IndexError")
+                    continue
 
                 edge_dirname = f"{dvd_id}({release_date})"
 
