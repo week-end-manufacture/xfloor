@@ -96,7 +96,7 @@ def main():
                 flib_instance.jcopy(jfile)
 
             for jfile in jfilelist:    
-                flib_instance.junlink(jfile)
+                flib_instance.junlink(jfile, 2)
             
         else:
             print("Supported url is not in URL_LIST")
